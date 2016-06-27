@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <canvas id="cvs" width="800" height="600" style="border: 1px solid purple;"></canvas>
+
+
+
+    <script src="./js/load_images.js"></script>
+    <script src="./js/bird.js"></script>
+    <script src="./js/sky.js"></script>
+    <script src="./js/land.js"></script>
+    <script src="./js/pipe.js"></script>
+    <script>
+        var cvs=document.getElementById("cvs");
+
+        var ctx=cvs.getContext("2d");
+
+
+        //主函数
+        function main() {
+            console.log("加载完成："+imgCount);
+
+            var bird=new Bird(imgObjects[0],cvs,ctx);
+            var sky01=new Sky(imgObjects[4],0,ctx);
+            var sky02=new Sky(imgObjects[4],800,ctx);
+            var land01=new Land(imgObjects[1],0,ctx);
+            var land02=new Land(imgObjects[1],336*1,ctx);
+            var land03=new Land(imgObjects[1],336*2,ctx);
+            var land04=new Land(imgObjects[1],336*3,ctx);
+            var pipe01=new Pipe(imgObjects[2],imgObjects[3],200*4,ctx);
+            var pipe02=new Pipe(imgObjects[2],imgObjects[3],200*5,ctx);
+            var pipe03=new Pipe(imgObjects[2],imgObjects[3],200*6,ctx);
+            var pipe04=new Pipe(imgObjects[2],imgObjects[3],200*7,ctx);
+            var pipe05=new Pipe(imgObjects[2],imgObjects[3],200*8,ctx);
+
+            var lastTime=Date.now();
+            function loop() {
+                var gameover=true;
+
+                var now=Date.now();
+                var dt=now-lastTime;
+                lastTime=now;
+
+                ctx.clearRect(0,0,800,600);
+
+                //更新数据
+                bird.update(dt);
+                sky01.update(dt);
+                sky02.update(dt);
+                land01.update(dt);
+                land02.update(dt);
+                land03.update(dt);
+                land04.update(dt);
+                pipe01.update(dt);
+                pipe02.update(dt);
+                pipe03.update(dt);
+                pipe04.update(dt);
+                pipe05.update(dt);
+
+                if (bird.y<=0||bird.y>=600-125) {
+                    gameover=false;
+                }
+
+                if (ctx.isPointInPath(bird.x,bird.y)) {
+                    gameover=false;
+                }
+                ctx.beginPath();
+
+                //绘制图形
+                sky01.draw();
+                sky02.draw();
+                pipe01.draw();
+                pipe02.draw();
+                pipe03.draw();
+                pipe04.draw();
+                pipe05.draw();
+                land01.draw();
+                land02.draw();
+                land03.draw();
+                land04.draw();
+                bird.draw();
+
+
+                if (gameover) {
+                    requestAnimationFrame(loop);
+                }
+            }
+
+            //递归
+            loop();
+        }
+
+
+
+    </script>
+</body>
+</html>
